@@ -1,0 +1,14 @@
+{
+  "LABEL": {
+    "name": "!! PR title needs formatting",
+    "color": "FE0038"
+  },
+  "CHECKS": {
+    "regexp": "(?:story|bugfix)\\/(TIC-TAC-TOE)\\-(\\d+|xxxx) - .*",
+    "regexpFlags": ""
+  },
+  "MESSAGES": {
+    "success": "All OK",
+    "failure": "PR title has wrong format. Accepted case-sensitive pattern - (?:story|bugfix)\\/(TIC-TAC-TOE)\\-(\\d+|xxxx) - .*",
+  }
+}

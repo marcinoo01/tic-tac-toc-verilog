@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: AGH UST
-// Engineers: Hubert Kwaœniewski, Marcin Mistela
+// Engineers: Hubert KwaÅ“niewski, Marcin Mistela
 // 
 // Create Date: 04.08.2022 09:45:43
 // Design Name: 
@@ -89,11 +89,19 @@ module draw_rect(
         //if(hcount_in >= xpos && hcount_in < (xpos + RECT_WIDTH) && vcount_in >= ypos && vcount_in < (ypos + RECT_LENGTH))
             //begin
                 //rgb_out_nxt = RECT_COLOR;
-            //end
-            //else
-            //begin
+            //end            if(((hcount_in >= 339) && (hcount_in <= 343)) || ((hcount_in >= 680) && (hcount_in <= 684)))
+            begin
+                rgb_out_nxt = 12'h0_0_0;
+            end
+            else if((vcount_in >= 252) && (vcount_in <= 258) || (vcount_in >= 508) && (vcount_in <= 514))
+            begin
+                rgb_out_nxt = 12'h0_0_0;
+            end
+            else
+            begin
                 rgb_out_nxt = rgb_in;
-            //end
+            end
+
     end
     
     

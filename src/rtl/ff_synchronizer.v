@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: AGH UST
-// Engineers: Hubert Kwaúniewski, Marcin Mistela
+// Engineers: Hubert Kwa≈ìniewski, Marcin Mistela
 // 
 // Create Date: 06.08.2022 15:23:35
 // Design Name: 
@@ -17,12 +17,13 @@
 // Revision 0.01 - File Created
 // Additional Comments:
 // 
-////////////////////
+
+
 
 module ff_synchronizer #(parameter WIDTH = 1)
    (
     input wire pclk,
-    input wire rst,//////////////////////////////////////////////////////////////
+    input wire rst,
 
     input wire [WIDTH - 1 : 0] din,
     output reg [WIDTH - 1 : 0] dout

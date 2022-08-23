@@ -159,8 +159,5 @@ if {$argc == 1} {
 } else {
     usage
     exit 1
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 4e21b67 (init setup + clk)
+

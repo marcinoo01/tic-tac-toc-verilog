@@ -1,4 +1,3 @@
-
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: AGH UST
@@ -107,5 +106,3 @@ module draw_background(
     end
     
 endmodule
-
-    

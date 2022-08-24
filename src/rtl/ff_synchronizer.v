@@ -1,7 +1,8 @@
+
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: AGH UST
-// Engineers: Hubert Kwaìniewski, Marcin Mistela
+// Engineers: Hubert KwaÃ¬niewski, Marcin Mistela
 // 
 // Create Date: 06.08.2022 15:23:35
 // Design Name: 

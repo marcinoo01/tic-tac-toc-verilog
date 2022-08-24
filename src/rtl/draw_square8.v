@@ -39,7 +39,9 @@ module draw_square8(
     input wire [11:0] rgb_in,
     input wire rst,
     input wire square8,
-    input wire start_en
+    input wire start_en,
+    input wire choice_en,
+    input wire [11:0] square_color
     );
     
     reg [11:0] rgb_out_nxt;
@@ -85,13 +87,13 @@ module draw_square8(
         vsync_out_nxt = vsync_in;
         vblnk_out_nxt = vblnk_in;
        
-        if(start_en)
+        if((start_en && (~choice_en)))
         begin
             if(square8 == 1)
             begin
                 if((hcount_in >= 344) && (hcount_in <= 679) && (vcount_in >= 515) && (vcount_in <= 767))
                 begin
-                    rgb_out_nxt = 12'hf_f_0;
+                    rgb_out_nxt = square_color;
                 end
                 else
                     rgb_out_nxt = rgb_in;

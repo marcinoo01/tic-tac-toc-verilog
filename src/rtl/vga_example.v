@@ -2,7 +2,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: AGH UST
-// Engineers: Hubert Kwaìniewski, Marcin Mistela
+// Engineers: Hubert Kwaœniewski, Marcin Mistela
 // 
 // Create Date: 04.08.2022 09:45:43
 // Design Name: 
@@ -53,7 +53,8 @@ module vga_example(
   wire [11:0] xpos_in_rect2;
   wire [11:0] ypos_in_rect1;
   wire [11:0] ypos_in_rect2;
-  wire start_en;
+  wire start_en, choice_en;
+  wire [11:0] square_color;
   
   ODDR pclk_oddr (
     .Q(pclk_mirror),
@@ -105,7 +106,9 @@ module vga_example(
     .mouse_xpos(xpos_in_rect2),
     .mouse_ypos(ypos_in_rect2),
     .mouse_left(mouse_left),
-    .start_en(start_en)
+    .start_en(start_en),
+    .choice_en(choice_en),
+    .square_color(square_color)
   );
   
   
@@ -151,7 +154,8 @@ module vga_example(
     .rgb_out(rgb_in_background),
     .char_xy(char_xy),
     .char_line(char_line),
-    .start_en(start_en)
+    .start_en(start_en),
+    .choice_en(choice_en)
   );
   
   font_rom font_rom(
@@ -160,8 +164,10 @@ module vga_example(
     .char_line_pixels(char_pixels)
   );
  
+ 
   char_rom char_rom(
     .char_xy(char_xy),
+    .choice_en(choice_en),
     .char_code(char_code)
   );
 
@@ -190,7 +196,8 @@ module vga_example(
     .hblnk_out(hblnk_out),
     .rgb_out(rgb_out),
     .rst(rst_d),
-    .start_en(start_en)
+    .start_en(start_en),
+    .choice_en(choice_en)
   );
   
   ff_synchronizer #(.WIDTH(12)) first_stage_xpos(
@@ -241,7 +248,9 @@ module vga_example(
     .vblnk_out(vblnk_out_rect),
     .rgb_out(rgb_out_rect),
     .rst(rst_d),
-    .start_en(start_en)
+    .start_en(start_en),
+    .choice_en(choice_en),
+    .square_color(square_color)
   );
   
   MouseCtl my_mouse_ctl(

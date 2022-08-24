@@ -1,7 +1,8 @@
+
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: AGH UST
-// Engineers: Hubert Kwaœniewski, Marcin Mistela
+// Engineers: Hubert KwaÅ“niewski, Marcin Mistela
 // 
 // Create Date: 15.08.2022 10:39:59
 // Design Name: 
@@ -31,6 +32,7 @@ module draw_rect_char(
     input wire vblnk_in,
     input wire [7:0] char_pixels,
     input wire start_en,
+    input wire choice_en,
     output reg [10:0] hcount_out,
     output reg hsync_out,
     output reg hblnk_out,
@@ -101,14 +103,36 @@ module draw_rect_char(
                 rgb_out_nxt = 12'h8_8_8;
             end
         end
+        else if(choice_en)
+        begin
+            if((vcount_in >= 300) && (vcount_in < 300 + LENGTH) && (hcount_in >= 470) && (hcount_in < 470 + 110))
+            begin
+                if(char_pixels[4'b1000 - hcount_rect[3:0]])
+                    rgb_out_nxt = LETTERS_COLOR;
+                else
+                    rgb_out_nxt = BACKGROUND_COLOR;
+            end
+            else if((vcount_in >= 450) && (vcount_in <= 550) && (hcount_in >= 300) && (hcount_in <= 400))
+            begin
+                rgb_out_nxt = 12'h0_0_f;
+            end
+            else if((vcount_in >= 450) && (vcount_in <= 550) && (hcount_in >= 650) && (hcount_in <= 750))
+            begin
+                rgb_out_nxt = 12'hf_f_0;
+            end
+            else
+            begin
+                rgb_out_nxt = 12'h8_8_8;
+            end
+        end
         else
         begin
             rgb_out_nxt = 12'h8_8_8;
         end
     end
     
-    assign vcount_rect = vcount_in - RECT_Y_POS;
-    assign hcount_rect = hcount_in - RECT_X_POS;
+    assign vcount_rect = choice_en ? (vcount_in - 300) : (vcount_in - RECT_Y_POS);
+    assign hcount_rect = choice_en ? (hcount_in - 470): (hcount_in - RECT_X_POS);
     assign char_xy = {vcount_rect[7:4], hcount_rect[6:3]};
     assign char_line = vcount_rect[3:0];
     

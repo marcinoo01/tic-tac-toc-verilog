@@ -1,9 +1,8 @@
 
-
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: AGH UST
-// Engineers: Hubert KwaÏniewski, Marcin Mistela
+// Engineers: Hubert Kwaœniewski, Marcin Mistela
 // 
 // Create Date: 04.08.2022 09:45:43
 // Design Name: 
@@ -42,7 +41,9 @@ module draw_rect(
       input wire [11:0] xpos,
       input wire [11:0] ypos,
       input wire mouse_left,
-      input wire start_en
+      input wire start_en,
+      input wire choice_en,
+      input wire [11:0] square_color
     );
     
     localparam height1 = 251,
@@ -113,7 +114,7 @@ module draw_rect(
         vblnk_out_nxt = vblnk_out9;
         rgb_out_nxt = rgb_out9;
         
-            if(start_en)
+            if((start_en && (~choice_en)))
             begin
                 if((xpos <= width1) && (ypos <= height1) && (mouse_left == 1))
                     square1_nxt = 1;
@@ -184,7 +185,9 @@ module draw_rect(
     .rgb_in(rgb_in),
     .rst(rst),
     .square1(square1),
-    .start_en(start_en)
+    .start_en(start_en),
+    .choice_en(choice_en),
+    .square_color(square_color)
     );
     
     draw_square2 draw_square2(
@@ -205,7 +208,9 @@ module draw_rect(
     .rgb_in(rgb_out1),
     .rst(rst),
     .square2(square2),
-    .start_en(start_en)
+    .start_en(start_en),
+    .choice_en(choice_en),
+    .square_color(square_color)
     );
     
     draw_square3 draw_square3(
@@ -226,7 +231,9 @@ module draw_rect(
     .rgb_in(rgb_out2),
     .rst(rst),
     .square3(square3),
-    .start_en(start_en)
+    .start_en(start_en),
+    .choice_en(choice_en),
+    .square_color(square_color)
     );
     
     draw_square4 draw_square4(
@@ -247,7 +254,9 @@ module draw_rect(
     .rgb_in(rgb_out3),
     .rst(rst),
     .square4(square4),
-    .start_en(start_en)
+    .start_en(start_en),
+    .choice_en(choice_en),
+    .square_color(square_color)
     );
     
     draw_square5 draw_square5(
@@ -268,7 +277,9 @@ module draw_rect(
     .rgb_in(rgb_out4),
     .rst(rst),
     .square5(square5),
-    .start_en(start_en)
+    .start_en(start_en),
+    .choice_en(choice_en),
+    .square_color(square_color)
     );
     
     draw_square6 draw_square6(
@@ -289,7 +300,9 @@ module draw_rect(
     .rgb_in(rgb_out5),
     .rst(rst),
     .square6(square6),
-    .start_en(start_en)
+    .start_en(start_en),
+    .choice_en(choice_en),
+    .square_color(square_color)
     );
     
     draw_square7 draw_square7(
@@ -310,7 +323,9 @@ module draw_rect(
     .rgb_in(rgb_out6),
     .rst(rst),
     .square7(square7),
-    .start_en(start_en)
+    .start_en(start_en),
+    .choice_en(choice_en),
+    .square_color(square_color)
     );
     
     draw_square8 draw_square8(
@@ -331,7 +346,9 @@ module draw_rect(
     .rgb_in(rgb_out7),
     .rst(rst),
     .square8(square8),
-    .start_en(start_en)
+    .start_en(start_en),
+    .choice_en(choice_en),
+    .square_color(square_color)
     );
     
     draw_square9 draw_square9(
@@ -352,7 +369,9 @@ module draw_rect(
     .rgb_in(rgb_out8),
     .rst(rst),
     .square9(square9),
-    .start_en(start_en)
+    .start_en(start_en),
+    .choice_en(choice_en),
+    .square_color(square_color)
     );
     
     

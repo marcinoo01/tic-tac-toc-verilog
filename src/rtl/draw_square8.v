@@ -1,7 +1,8 @@
+
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: AGH UST
-// Engineers: Hubert Kwaœniewski, Marcin Mistela
+// Engineers: Hubert KwaÅ“niewski, Marcin Mistela
 // 
 // Create Date: 10.08.2022 10:58:20
 // Design Name: 
@@ -37,7 +38,8 @@ module draw_square8(
     input wire vblnk_in,
     input wire [11:0] rgb_in,
     input wire rst,
-    input wire square8
+    input wire square8,
+    input wire start_en
     );
     
     reg [11:0] rgb_out_nxt;
@@ -83,18 +85,22 @@ module draw_square8(
         vsync_out_nxt = vsync_in;
         vblnk_out_nxt = vblnk_in;
        
-       
-        if(square8 == 1)
+        if(start_en)
         begin
-            if((hcount_in >= 344) && (hcount_in <= 679) && (vcount_in >= 515) && (vcount_in <= 767))
+            if(square8 == 1)
             begin
-                rgb_out_nxt = 12'hf_f_0;
+                if((hcount_in >= 344) && (hcount_in <= 679) && (vcount_in >= 515) && (vcount_in <= 767))
+                begin
+                    rgb_out_nxt = 12'hf_f_0;
+                end
+                else
+                    rgb_out_nxt = rgb_in;
             end
             else
-                rgb_out_nxt = rgb_in;
+                rgb_out_nxt = rgb_in; 
         end
         else
-            rgb_out_nxt = rgb_in; 
+            rgb_out_nxt = rgb_in;
     end
     
 endmodule

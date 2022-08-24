@@ -1,3 +1,4 @@
+
 #Project name                                 -- EDIT
 set project tic_tac_toe_game
 # Top module name                             -- EDIT
@@ -45,6 +46,19 @@ proc create_new_project {project target top_module} {
 		rtl/vga_example.v
 		rtl/vga_timing.v
 		rtl/ff_synchronizer.v
+		rtl/char_rom.v
+		rtl/control_unit.v
+		rtl/draw_rect_char.v
+		rtl/draw_square1.v
+		rtl/draw_square2.v
+		rtl/draw_square3.v
+		rtl/draw_square4.v
+		rtl/draw_square5.v
+		rtl/draw_square6.v
+		rtl/draw_square7.v
+		rtl/draw_square8.v
+		rtl/draw_square9.v
+		rtl/font_rom.v
     }
     
     # Specify vhdl design files location      -- EDIT
@@ -160,4 +174,3 @@ if {$argc == 1} {
     usage
     exit 1
 }
-

@@ -43,9 +43,6 @@ set_property IOSTANDARD LVCMOS33 [get_ports {b[2]}]
 set_property PACKAGE_PIN J18 [get_ports {b[3]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {b[3]}]
 
-# Constraints for PCLK_MIRROR
-set_property PACKAGE_PIN J1 [get_ports {pclk_mirror}]
-set_property IOSTANDARD LVCMOS33 [get_ports {pclk_mirror}]
 
 # Constraints for CFGBVS
 set_property CFGBVS VCCO [current_design]
@@ -59,3 +56,19 @@ set_property PACKAGE_PIN B17 [get_ports {ps2_data}]
 set_property IOSTANDARD LVCMOS33 [get_ports {ps2_data}]	
 set_property PULLUP true [get_ports {ps2_data}]
 
+## Constraints for UART 
+##Pmod Header JA
+##Sch name = JA1
+set_property PACKAGE_PIN J1 [get_ports {rx}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {rx}]
+##Sch name = L2
+set_property PACKAGE_PIN L2 [get_ports {tx}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {tx}]
+
+
+##Constraints for tests of UART
+##USB-RS232 Interface
+#set_property PACKAGE_PIN B18 [get_ports rx]						
+	#set_property IOSTANDARD LVCMOS33 [get_ports rx]
+#set_property PACKAGE_PIN A18 [get_ports tx]						
+	#set_property IOSTANDARD LVCMOS33 [get_ports tx]

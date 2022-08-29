@@ -58,6 +58,13 @@ proc create_new_project {project target top_module} {
 		rtl/draw_square8.v
 		rtl/draw_square9.v
 		rtl/font_rom.v
+		rtl/fifo.v
+		rtl/mod_m_counter.v
+		rtl/square_ctl.v
+		rtl/UART.v
+		rtl/uart_rx.v
+		rtl/uart_tx.v
+		rtl/uart_unit.v
     }
     
     # Specify vhdl design files location      -- EDIT

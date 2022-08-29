@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: AGH UST
-// Engineers: Hubert KwaÅ“niewski, Marcin Mistela
+// Engineers: Hubert Kwaœniewski, Marcin Mistela
 // 
 // Create Date: 10.08.2022 10:58:20
 // Design Name: 
@@ -40,7 +40,7 @@ module draw_square3(
     input wire square3,
     input wire start_en,
     input wire choice_en,
-    input wire [11:0] square_color
+    input wire [11:0] square3_color
     );
     
     reg [11:0] rgb_out_nxt;
@@ -50,6 +50,9 @@ module draw_square3(
     reg [10:0] vcount_out_nxt;
     reg hblnk_out_nxt;
     reg vblnk_out_nxt;
+    
+    localparam BLUE   = 12'h0_0_f,
+               YELLOW = 12'hf_f_0;
     
     
     always@(posedge pclk)
@@ -92,7 +95,10 @@ module draw_square3(
             begin
                 if((hcount_in >= 685) && (hcount_in <= 1023) && (vcount_in <= 251))
                 begin
-                    rgb_out_nxt = square_color;
+                    if(square3_color == 0)
+                        rgb_out_nxt = BLUE;
+                    else
+                        rgb_out_nxt = YELLOW;
                 end
                 else
                     rgb_out_nxt = rgb_in;

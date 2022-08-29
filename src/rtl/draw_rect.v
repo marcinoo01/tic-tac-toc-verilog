@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: AGH UST
-// Engineers: Hubert Kwa≈ìniewski, Marcin Mistela
+// Engineers: Hubert Kwaúniewski, Marcin Mistela
 // 
 // Create Date: 04.08.2022 09:45:43
 // Design Name: 
@@ -37,19 +37,11 @@ module draw_rect(
       input wire vblnk_in,
       input wire [11:0] rgb_in,
       input wire rst,
-      input wire [11:0] xpos,
-      input wire [11:0] ypos,
-      input wire mouse_left,
       input wire start_en,
       input wire choice_en,
-      input wire [11:0] square_color
+      input wire [8:0] square1to9,
+      input wire [8:0] square1to9_color
     );
-    
-    localparam height1 = 251,
-               width1  = 338,
-               height2 = 248,
-               width2  = 335,
-               height3 = 252;
                
     
     reg [11:0] rgb_out_nxt;
@@ -66,8 +58,7 @@ module draw_rect(
     wire hblnk_out1, hblnk_out2, hblnk_out3, hblnk_out4, hblnk_out5, hblnk_out6, hblnk_out7, hblnk_out8, hblnk_out9;
     reg vblnk_out_nxt;
     wire vblnk_out1, vblnk_out2, vblnk_out3, vblnk_out4, vblnk_out5, vblnk_out6, vblnk_out7, vblnk_out8, vblnk_out9;
-    reg square1, square2, square3, square4, square5, square6, square7, square8, square9;
-    reg square1_nxt, square2_nxt, square3_nxt, square4_nxt, square5_nxt, square6_nxt, square7_nxt, square8_nxt, square9_nxt;
+
     
     always@(posedge pclk)
     begin
@@ -80,7 +71,6 @@ module draw_rect(
             hblnk_out  <= 0;
             vblnk_out  <= 0;
             rgb_out    <= 0;
-            square1    <= 0; square2 <= 0; square3 <= 0; square4 <= 0; square5 <= 0; square6 <= 0; square7 <= 0; square8 <= 0; square9 <= 0;
         end
         else
         begin
@@ -91,15 +81,6 @@ module draw_rect(
             hblnk_out  <= hblnk_out_nxt;
             vblnk_out  <= vblnk_out_nxt;
             rgb_out    <= rgb_out_nxt;
-            square1    <= square1_nxt;
-            square2    <= square2_nxt;
-            square3    <= square3_nxt;
-            square4    <= square4_nxt;
-            square5    <= square5_nxt;
-            square6    <= square6_nxt;
-            square7    <= square7_nxt;
-            square8    <= square8_nxt;
-            square9    <= square9_nxt;
         end
     end
     
@@ -112,59 +93,8 @@ module draw_rect(
         vsync_out_nxt = vsync_out9;
         vblnk_out_nxt = vblnk_out9;
         rgb_out_nxt = rgb_out9;
-        
-            if((start_en && (~choice_en)))
-            begin
-                if((xpos <= width1) && (ypos <= height1) && (mouse_left == 1))
-                    square1_nxt = 1;
-                else
-                    square1_nxt = square1;
-                if((xpos >= 344) && (xpos <= 679) && (ypos <= height1) && (mouse_left == 1))
-                    square2_nxt = 1;
-                else
-                    square2_nxt = square2;
-                if((xpos >= 685) && (xpos <= 1023) && (ypos <= height1) && (mouse_left == 1))
-                    square3_nxt = 1;
-                else
-                    square3_nxt = square3;
-                if((xpos <= width1) && (ypos >= 259) && (ypos <= 507) && (mouse_left == 1))
-                    square4_nxt = 1;
-                else
-                    square4_nxt = square4;
-                if((xpos >= 344) && (xpos <= 679) && (ypos >= 259) && (ypos <= 507) && (mouse_left == 1))
-                    square5_nxt = 1;
-                else
-                    square5_nxt = square5;
-                if((xpos >= 685) && (xpos <= 1023) && (ypos >= 259) && (ypos <= 507) && (mouse_left == 1))
-                    square6_nxt = 1;
-                else
-                    square6_nxt = square6;
-                if((xpos <= width1) && (ypos >= 515) && (ypos <= 767) && (mouse_left == 1))
-                    square7_nxt = 1;
-                else
-                    square7_nxt = square7;
-                if((xpos >= 344) && (xpos <= 679) && (ypos >= 515) && (ypos <= 767) && (mouse_left == 1))
-                    square8_nxt = 1;
-                else
-                    square8_nxt = square8;
-                if((xpos >= 685) && (xpos <= 1023) && (ypos >= 515) && (ypos <= 767) && (mouse_left == 1))
-                    square9_nxt = 1;
-                else
-                    square9_nxt = square9;   
-           end
-           else
-           begin
-                square1_nxt = square1;
-                square2_nxt = square2;
-                square3_nxt = square3;
-                square4_nxt = square4;
-                square5_nxt = square5;
-                square6_nxt = square6;
-                square7_nxt = square7;
-                square8_nxt = square8;
-                square9_nxt = square9;   
-           end
     end
+    
     
     draw_square1 draw_square1(
     .vcount_out(vcount_out1),
@@ -183,10 +113,10 @@ module draw_rect(
     .vblnk_in(vblnk_in),
     .rgb_in(rgb_in),
     .rst(rst),
-    .square1(square1),
+    .square1(square1to9[0]),
     .start_en(start_en),
     .choice_en(choice_en),
-    .square_color(square_color)
+    .square1_color(square1to9_color[0])
     );
     
     draw_square2 draw_square2(
@@ -206,10 +136,10 @@ module draw_rect(
     .vblnk_in(vblnk_out1),
     .rgb_in(rgb_out1),
     .rst(rst),
-    .square2(square2),
+    .square2(square1to9[1]),
     .start_en(start_en),
     .choice_en(choice_en),
-    .square_color(square_color)
+    .square2_color(square1to9_color[1])
     );
     
     draw_square3 draw_square3(
@@ -229,10 +159,10 @@ module draw_rect(
     .vblnk_in(vblnk_out2),
     .rgb_in(rgb_out2),
     .rst(rst),
-    .square3(square3),
+    .square3(square1to9[2]),
     .start_en(start_en),
     .choice_en(choice_en),
-    .square_color(square_color)
+    .square3_color(square1to9_color[2])
     );
     
     draw_square4 draw_square4(
@@ -252,10 +182,10 @@ module draw_rect(
     .vblnk_in(vblnk_out3),
     .rgb_in(rgb_out3),
     .rst(rst),
-    .square4(square4),
+    .square4(square1to9[3]),
     .start_en(start_en),
     .choice_en(choice_en),
-    .square_color(square_color)
+    .square4_color(square1to9_color[3])
     );
     
     draw_square5 draw_square5(
@@ -275,10 +205,10 @@ module draw_rect(
     .vblnk_in(vblnk_out4),
     .rgb_in(rgb_out4),
     .rst(rst),
-    .square5(square5),
+    .square5(square1to9[4]),
     .start_en(start_en),
     .choice_en(choice_en),
-    .square_color(square_color)
+    .square5_color(square1to9_color[4])
     );
     
     draw_square6 draw_square6(
@@ -298,10 +228,10 @@ module draw_rect(
     .vblnk_in(vblnk_out5),
     .rgb_in(rgb_out5),
     .rst(rst),
-    .square6(square6),
+    .square6(square1to9[5]),
     .start_en(start_en),
     .choice_en(choice_en),
-    .square_color(square_color)
+    .square6_color(square1to9_color[5])
     );
     
     draw_square7 draw_square7(
@@ -321,10 +251,10 @@ module draw_rect(
     .vblnk_in(vblnk_out6),
     .rgb_in(rgb_out6),
     .rst(rst),
-    .square7(square7),
+    .square7(square1to9[6]),
     .start_en(start_en),
     .choice_en(choice_en),
-    .square_color(square_color)
+    .square7_color(square1to9_color[6])
     );
     
     draw_square8 draw_square8(
@@ -344,10 +274,10 @@ module draw_rect(
     .vblnk_in(vblnk_out7),
     .rgb_in(rgb_out7),
     .rst(rst),
-    .square8(square8),
+    .square8(square1to9[7]),
     .start_en(start_en),
     .choice_en(choice_en),
-    .square_color(square_color)
+    .square8_color(square1to9_color[7])
     );
     
     draw_square9 draw_square9(
@@ -367,11 +297,12 @@ module draw_rect(
     .vblnk_in(vblnk_out8),
     .rgb_in(rgb_out8),
     .rst(rst),
-    .square9(square9),
+    .square9(square1to9[8]),
     .start_en(start_en),
     .choice_en(choice_en),
-    .square_color(square_color)
+    .square9_color(square1to9_color[8])
     );
     
     
 endmodule
+

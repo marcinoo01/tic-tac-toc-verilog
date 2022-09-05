@@ -28,21 +28,25 @@ module control_unit(
     input wire mouse_left,
     input wire rx_tx_done,
     input wire [8:0] square1to9,
+    input wire game_over,
+    output reg new_game,
     output reg start_en,
     output reg choice_en,
     output reg playerID, uart_en, write_uart_en, uart_mode
     );
     
-    localparam IDLE           = 10'b0000000001,
-               PLAYER_1       = 10'b0000000010,
-               PLAYER_2       = 10'b0000000100,
-               WAIT           = 10'b0000001000,
-               CHOICE         = 10'b0000010000,
-               WAIT2          = 10'b0000100000,
-               RX_TRANSMIT    = 10'b0001000000,
-               TX_TRANSMIT    = 10'b0010000000,
-               UPDATE_BOARD   = 10'b0100000000,
-               UPDATE_SQUARES = 10'b1000000000;
+    localparam IDLE           = 12'b000000000001,
+               PLAYER_1       = 12'b000000000010,
+               PLAYER_2       = 12'b000000000100,
+               WAIT           = 12'b000000001000,
+               CHOICE         = 12'b000000010000,
+               WAIT2          = 12'b000000100000,
+               RX_TRANSMIT    = 12'b000001000000,
+               TX_TRANSMIT    = 12'b000010000000,
+               UPDATE_BOARD   = 12'b000100000000,
+               UPDATE_SQUARES = 12'b001000000000,
+               GAME_OVER      = 12'b010000000000,
+               NEW_GAME       = 12'b100000000000;
     
     localparam HEIGHT1 = 251,
                WIDTH1  = 338,
@@ -50,9 +54,9 @@ module control_unit(
                RECEIVING = 1'b1;
     
     reg [8:0] updated_square1to9, updated_square1to9_nxt;
-    reg [9:0] state;
-    reg [9:0] state_nxt;
-    reg start_en_nxt, choice_en_nxt, uart_en_nxt, write_uart_en_nxt, uart_mode_nxt;
+    reg [11:0] state;
+    reg [11:0] state_nxt;
+    reg start_en_nxt, choice_en_nxt, uart_en_nxt, write_uart_en_nxt, uart_mode_nxt, new_game_nxt;
     reg [26:0] counter, counter_nxt;
     reg playerID_nxt;
     
@@ -69,6 +73,7 @@ module control_unit(
             write_uart_en <= 0;
             uart_mode <= 0;
             updated_square1to9 <= 0;
+            new_game <= 0;
         end
         else
         begin
@@ -81,6 +86,7 @@ module control_unit(
             write_uart_en <= write_uart_en_nxt;
             uart_mode <= uart_mode_nxt;
             updated_square1to9 <= updated_square1to9_nxt;
+            new_game <= new_game_nxt;
         end
     end 
     
@@ -96,6 +102,7 @@ module control_unit(
     write_uart_en_nxt = write_uart_en;
     uart_mode_nxt = uart_mode;
     updated_square1to9_nxt = updated_square1to9;
+    new_game_nxt = new_game;
     
         case(state)
             IDLE:
@@ -103,9 +110,10 @@ module control_unit(
                     start_en_nxt = 0;
                     choice_en_nxt = 0;
                     counter_nxt = 0;
-                    uart_en_nxt = SENDING;
+                    uart_en_nxt = 0;
                     write_uart_en_nxt = 0;
-                    uart_mode_nxt = 0;
+                    uart_mode_nxt = SENDING;
+                    new_game_nxt = 0;
                     if((mouse_xpos >= 490) && (mouse_xpos <= 530) && (mouse_ypos >= 600) && (mouse_ypos <= 615) && (mouse_left == 1))
                     begin
                         state_nxt = WAIT;
@@ -154,21 +162,26 @@ module control_unit(
                     begin
                         counter_nxt = 0;
                         choice_en_nxt = 0;
+                        start_en_nxt = 1;
                         if(playerID == 0)
                         begin
                             state_nxt = PLAYER_1;
                             uart_mode_nxt = SENDING;
+                            write_uart_en_nxt = 0;
+                            uart_en_nxt = 0;
                         end
                         else
                         begin
                             state_nxt = RX_TRANSMIT;
                             uart_mode_nxt = RECEIVING;
+                            write_uart_en_nxt = 1;
                         end
                     end
                     else
                     begin
                         counter_nxt = counter + 1;
                         state_nxt = WAIT2;
+                        new_game_nxt = 0;
                     end
                 end
             PLAYER_1:
@@ -185,7 +198,7 @@ module control_unit(
                     || ((mouse_xpos >= 344) && (mouse_xpos <= 679) && (mouse_ypos >= 515) && (mouse_ypos <= 767) && (mouse_left == 1) && (updated_square1to9[7] == 0))
                     || ((mouse_xpos >= 685) && (mouse_xpos <= 1023) && (mouse_ypos >= 515) && (mouse_ypos <= 767) && (mouse_left == 1) && (updated_square1to9[8] == 0)))
                     begin
-                        if(counter == 80000)
+                        if(counter == 8000)
                         begin
                             counter_nxt = 0;
                             state_nxt = TX_TRANSMIT;
@@ -221,8 +234,11 @@ module control_unit(
                     write_uart_en_nxt = 1;
                     if(rx_tx_done)
                     begin
-                        state_nxt = RX_TRANSMIT;
                         uart_mode_nxt = RECEIVING;
+                        if(game_over)
+                            state_nxt = UPDATE_BOARD;
+                        else
+                            state_nxt = RX_TRANSMIT;
                     end
                     else
                         state_nxt = TX_TRANSMIT;    
@@ -241,7 +257,7 @@ module control_unit(
                     || ((mouse_xpos >= 344) && (mouse_xpos <= 679) && (mouse_ypos >= 515) && (mouse_ypos <= 767) && (mouse_left == 1) && (updated_square1to9[7] == 0))
                     || ((mouse_xpos >= 685) && (mouse_xpos <= 1023) && (mouse_ypos >= 515) && (mouse_ypos <= 767) && (mouse_left == 1) && (updated_square1to9[8] == 0)))
                     begin
-                        if(counter == 80000)
+                        if(counter == 8000)
                         begin
                             counter_nxt = 0;
                             state_nxt = TX_TRANSMIT;
@@ -265,11 +281,14 @@ module control_unit(
                     if(playerID == 0)
                     begin
                         write_uart_en_nxt = 0;
-                        if(counter == 8000000)
+                        if(counter == 80000000)
                         begin
                             counter_nxt = 0;
                             updated_square1to9_nxt = square1to9;
-                            state_nxt = PLAYER_1;
+                            if(game_over)
+                                state_nxt = GAME_OVER;
+                            else
+                                state_nxt = PLAYER_1;
                         end
                         else
                         begin
@@ -284,7 +303,10 @@ module control_unit(
                         begin
                             counter_nxt = 0;
                             updated_square1to9_nxt = square1to9;
-                            state_nxt = PLAYER_2;
+                            if(game_over)
+                                state_nxt = GAME_OVER;
+                            else
+                                state_nxt = PLAYER_2;
                         end
                         else
                         begin
@@ -293,6 +315,42 @@ module control_unit(
                         end
                     end
                 end
+              GAME_OVER:
+                 begin
+                    start_en_nxt = 0;
+                    write_uart_en_nxt = 1;
+                    uart_en_nxt = 0;
+                    new_game_nxt = 0;
+                    if(counter == 80000000)
+                    begin
+                       counter_nxt = 0;
+                       state_nxt = NEW_GAME; 
+                    end
+                    else
+                    begin
+                        counter_nxt = counter + 1;
+                        state_nxt = GAME_OVER;
+                    end    
+                 end
+               NEW_GAME:
+                 begin
+                    new_game_nxt = 1;
+                    if(counter == 8000000)
+                    begin
+                        counter_nxt = 0;
+                        uart_en_nxt = 0;
+                        write_uart_en_nxt = 0;
+                        if(playerID == 0)
+                            state_nxt = WAIT2;
+                        else
+                            state_nxt = WAIT2;
+                    end
+                    else
+                    begin
+                        counter_nxt = counter + 1;
+                        state_nxt = NEW_GAME;
+                    end
+                 end    
             default:
                 begin
                     state_nxt = IDLE;
@@ -303,6 +361,7 @@ module control_unit(
                     playerID_nxt = 0;
                     write_uart_en_nxt = 0;
                     updated_square1to9_nxt = 0;
+                    new_game_nxt = 0;
                 end
         endcase
     end

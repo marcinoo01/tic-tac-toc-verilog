@@ -65,6 +65,7 @@ proc create_new_project {project target top_module} {
 		rtl/uart_rx.v
 		rtl/uart_tx.v
 		rtl/uart_unit.v
+		rtl/winner_check.v
     }
     
     # Specify vhdl design files location      -- EDIT

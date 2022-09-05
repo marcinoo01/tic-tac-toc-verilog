@@ -58,10 +58,10 @@ set_property PULLUP true [get_ports {ps2_data}]
 
 ## Constraints for UART 
 ##Pmod Header JA
-##Sch name = JA1
-set_property PACKAGE_PIN J1 [get_ports {rx}]					
+##Sch name = JA3
+set_property PACKAGE_PIN J2 [get_ports {rx}]					
 	set_property IOSTANDARD LVCMOS33 [get_ports {rx}]
-##Sch name = L2
+##Sch name = JA2
 set_property PACKAGE_PIN L2 [get_ports {tx}]					
 	set_property IOSTANDARD LVCMOS33 [get_ports {tx}]
 

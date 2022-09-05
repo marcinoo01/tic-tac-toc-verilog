@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: AGH UST
-// Engineers: Hubert KwaÅ“niewski, Marcin Mistela
+// Engineers: Hubert Kwaœniewski, Marcin Mistela
 // 
 // Create Date: 04.08.2022 09:45:43
 // Design Name: 
@@ -32,6 +32,7 @@ module draw_background(
     input wire [11:0] rgb_in,
     input wire start_en,
     input wire choice_en,
+    input wire game_over,
     output reg [10:0] hcount_out,
     output reg hsync_out,
     output reg hblnk_out,
@@ -83,7 +84,7 @@ module draw_background(
             hcount_out_nxt = hcount_in;
             vcount_out_nxt = vcount_in;
             
-            if((start_en && (~choice_en)))
+            if((start_en && (~choice_en) && (~game_over)))
             begin
                 if (vblnk_in || hblnk_in) rgb_out_nxt = 12'h0_0_0; 
                 else if(((hcount_in >= 339) && (hcount_in <= 343)) || ((hcount_in >= 680) && (hcount_in <= 684)))
@@ -96,7 +97,7 @@ module draw_background(
                 end
                 else
                 begin
-                    rgb_out_nxt = 12'h8_8_8;    
+                    rgb_out_nxt = rgb_in;   
                 end
             end
             else
@@ -106,3 +107,5 @@ module draw_background(
     end
     
 endmodule
+
+    

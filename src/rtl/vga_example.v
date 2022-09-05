@@ -53,10 +53,11 @@ module vga_example(
   wire [11:0] xpos_in_rect2;
   wire [11:0] ypos_in_rect1;
   wire [11:0] ypos_in_rect2;
-  wire start_en, choice_en, uart_en, uart_mode, write_uart_en;
+  wire start_en, choice_en, uart_en, uart_mode, write_uart_en, game_over, new_game;
   wire playerID, rx_tx_done;
   wire [7:0] w_data, r_data, r_data1, r_data2;
   wire [8:0] square1to9, square1to9_color;
+  wire [1:0] display_winner;
   
     
   wire locked;
@@ -101,12 +102,14 @@ module vga_example(
     .mouse_left(mouse_left2),
     .rx_tx_done(rx_tx_done),
     .square1to9(square1to9),
+    .game_over(game_over),
     .start_en(start_en),
     .choice_en(choice_en),
     .playerID(playerID),
     .uart_en(uart_en),
     .write_uart_en(write_uart_en),
-    .uart_mode(uart_mode)
+    .uart_mode(uart_mode),
+    .new_game(new_game)
   );
   
   
@@ -153,7 +156,8 @@ module vga_example(
     .char_xy(char_xy),
     .char_line(char_line),
     .start_en(start_en),
-    .choice_en(choice_en)
+    .choice_en(choice_en),
+    .game_over(game_over)
   );
   
   font_rom font_rom(
@@ -166,6 +170,7 @@ module vga_example(
   char_rom char_rom(
     .char_xy(char_xy),
     .choice_en(choice_en),
+    .display_winner(display_winner),
     .char_code(char_code)
   );
 
@@ -195,7 +200,8 @@ module vga_example(
     .rgb_out(rgb_out),
     .rst(rst_d),
     .start_en(start_en),
-    .choice_en(choice_en)
+    .choice_en(choice_en),
+    .game_over(game_over)
   );
   
   ff_synchronizer #(.WIDTH(12)) first_stage_xpos(
@@ -259,10 +265,17 @@ module vga_example(
     .clk(pclk_100MHz), .reset(rst_d2),
     .uart_mode(uart_mode), 
     .uart_en(uart_en),
+    .new_game(new_game),
     .tx(tx),
     .rx(rx),
     .rx_tx_done(rx_tx_done),
     .rec_data(r_data)
+  );
+  
+  winner_check my_winner_check(
+    .pclk(pclk_75MHz), .rst(rst_d || new_game),
+    .square1to9(square1to9), .square1to9_color(square1to9_color),
+    .display_winner(display_winner), .game_over(game_over)
   );
   
   square_ctl my_square_ctl(
@@ -276,7 +289,7 @@ module vga_example(
     .write_uart_en(write_uart_en),
     .rec_data(r_data2),
     .w_data(w_data),
-    .square1to9(square1to9), .square1to9_color(square1to9_color)
+    .square1to9(square1to9), .square1to9_color(square1to9_color), .new_game(new_game)
     );
   
   

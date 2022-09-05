@@ -25,6 +25,7 @@ module UART(
     input wire clk, reset,
     input wire uart_mode, // 0: tx, 1: rx
     input wire uart_en,
+    input wire new_game,
     output wire tx,
     input wire rx,
     output reg rx_tx_done,
@@ -126,7 +127,14 @@ module UART(
        begin
           rd_uart_nxt = 0;
           wr_uart_nxt = 0;
-          rec_data_nxt = rec_data;
+          if(~new_game)
+          begin
+            rec_data_nxt = rec_data;
+          end
+          else
+          begin
+            rec_data_nxt = 0;
+          end
           rx_tx_done_nxt = 0;
           tx_tick_detect_nxt = 0;
           rx_tick_detect_nxt = 0;

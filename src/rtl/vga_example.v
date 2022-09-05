@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: AGH UST
-// Engineers: Hubert KwaÅ“niewski, Marcin Mistela
+// Engineers: Hubert Kwaœniewski, Marcin Mistela
 // 
 // Create Date: 04.08.2022 09:45:43
 // Design Name: 
@@ -15,7 +15,7 @@
 // 
 // Revision:
 // Revision 0.01 - File Created
-// Additional Comments:
+// Additional Comments: modu³y VGA_example, VGA_timing, Mouse_Display, Mouse_ctl, font_rom, char_rom udostêpnione na zajêciach UEC2
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -23,6 +23,7 @@
 module vga_example(
       input wire clk,
       input wire rst,
+      input wire rx,
       inout ps2_clk,
       inout ps2_data,
       output reg vs,
@@ -30,7 +31,7 @@ module vga_example(
       output reg [3:0] r,
       output reg [3:0] g,
       output reg [3:0] b,
-      output wire pclk_mirror
+      output wire tx
     );
     
     
@@ -46,24 +47,17 @@ module vga_example(
   wire vblnk_out_rect;
   wire [11:0] xpos_in_rect;
   wire [11:0] ypos_in_rect;
-  wire mouse_left;
+  wire mouse_left, mouse_left1, mouse_left2;
   
   wire [11:0] xpos_in_rect1;
   wire [11:0] xpos_in_rect2;
   wire [11:0] ypos_in_rect1;
   wire [11:0] ypos_in_rect2;
-  wire start_en, choice_en;
-  wire [11:0] square_color;
+  wire start_en, choice_en, uart_en, uart_mode, write_uart_en;
+  wire playerID, rx_tx_done;
+  wire [7:0] w_data, r_data, r_data1, r_data2;
+  wire [8:0] square1to9, square1to9_color;
   
-  ODDR pclk_oddr (
-    .Q(pclk_mirror),
-    .C(pclk_75MHz),
-    .CE(1'b1),
-    .D1(1'b1),
-    .D2(1'b0),
-    .R(1'b0),
-    .S(1'b0)
-  );
     
   wire locked;
   wire rst_d;
@@ -104,10 +98,15 @@ module vga_example(
     .rst(rst_d),
     .mouse_xpos(xpos_in_rect2),
     .mouse_ypos(ypos_in_rect2),
-    .mouse_left(mouse_left),
+    .mouse_left(mouse_left2),
+    .rx_tx_done(rx_tx_done),
+    .square1to9(square1to9),
     .start_en(start_en),
     .choice_en(choice_en),
-    .square_color(square_color)
+    .playerID(playerID),
+    .uart_en(uart_en),
+    .write_uart_en(write_uart_en),
+    .uart_mode(uart_mode)
   );
   
   
@@ -227,11 +226,62 @@ module vga_example(
     .dout(ypos_in_rect2)
   );
   
-  draw_rect my_draw_rect(
+  ff_synchronizer first_stage_mouse_left(
     .pclk(pclk_75MHz),
+    .rst(rst),
+    .din(mouse_left),
+    .dout(mouse_left1)
+  );
+  
+  ff_synchronizer second_stage_mouse_left(
+    .pclk(pclk_75MHz),
+    .rst(rst),
+    .din(mouse_left1),
+    .dout(mouse_left2)
+  );
+  
+  ff_synchronizer #(.WIDTH(8))first_stage_r_data(
+    .pclk(pclk_75MHz),
+    .rst(rst),
+    .din(r_data),
+    .dout(r_data1)
+  );
+  
+  ff_synchronizer #(.WIDTH(8))second_stage_r_data(
+    .pclk(pclk_75MHz),
+    .rst(rst),
+    .din(r_data1),
+    .dout(r_data2)
+  );
+  
+    UART my_UART(
+    .w_data(w_data),
+    .clk(pclk_100MHz), .reset(rst_d2),
+    .uart_mode(uart_mode), 
+    .uart_en(uart_en),
+    .tx(tx),
+    .rx(rx),
+    .rx_tx_done(rx_tx_done),
+    .rec_data(r_data)
+  );
+  
+  square_ctl my_square_ctl(
+    .pclk(pclk_75MHz), .rst(rst_d),
+    .mouse_left(mouse_left2),
     .xpos(xpos_in_rect2),
     .ypos(ypos_in_rect2),
-    .mouse_left(mouse_left),
+    .start_en(start_en),
+    .choice_en(choice_en),
+    .playerID(playerID),
+    .write_uart_en(write_uart_en),
+    .rec_data(r_data2),
+    .w_data(w_data),
+    .square1to9(square1to9), .square1to9_color(square1to9_color)
+    );
+  
+  
+  draw_rect my_draw_rect(
+    .pclk(pclk_75MHz),
     .hcount_in(hcount_out),
     .hsync_in(hsync_out),
     .hblnk_in(hblnk_out),
@@ -249,7 +299,7 @@ module vga_example(
     .rst(rst_d),
     .start_en(start_en),
     .choice_en(choice_en),
-    .square_color(square_color)
+    .square1to9(square1to9), .square1to9_color(square1to9_color)
   );
   
   MouseCtl my_mouse_ctl(

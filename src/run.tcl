@@ -27,52 +27,52 @@ proc create_new_project {project target top_module} {
     
     # Specify .xdc files location             -- EDIT
     read_xdc {
-        constraints/clk_wiz_0.xdc
-		constraints/clk_wiz_0_board.xdc
-		constraints/clk_wiz_0_late.xdc
-		constraints/clk_wiz_0_ooc.xdc
-		constraints/vga_constraints.xdc
+        ../src/constraints/clk_wiz_0.xdc
+		../src/constraints/clk_wiz_0_board.xdc
+		../src/constraints/clk_wiz_0_late.xdc
+		../src/constraints/clk_wiz_0_ooc.xdc
+		../src/constraints/vga_constraints.xdc
     }
 
     # Specify verilog design files location   -- EDIT
     read_verilog {
-		rtl/clk_wiz_0.v
-		rtl/clk_wiz_0_clk_wiz.v
-		rtl/draw_background.v
-		rtl/draw_rect.v
-		rtl/ff_delay.v
-		rtl/reset_delay.v
-		rtl/vga_example.v
-		rtl/vga_timing.v
-		rtl/ff_synchronizer.v
-		rtl/char_rom.v
-		rtl/control_unit.v
-		rtl/draw_rect_char.v
-		rtl/draw_square1.v
-		rtl/draw_square2.v
-		rtl/draw_square3.v
-		rtl/draw_square4.v
-		rtl/draw_square5.v
-		rtl/draw_square6.v
-		rtl/draw_square7.v
-		rtl/draw_square8.v
-		rtl/draw_square9.v
-		rtl/font_rom.v
-		rtl/fifo.v
-		rtl/mod_m_counter.v
-		rtl/square_ctl.v
-		rtl/UART.v
-		rtl/uart_rx.v
-		rtl/uart_tx.v
-		rtl/uart_unit.v
-		rtl/winner_check.v
+		../src/rtl/clk_wiz_0.v
+		../src/rtl/clk_wiz_0_clk_wiz.v
+		../src/rtl/draw_background.v
+		../src/rtl/draw_rect.v
+		../src/rtl/ff_delay.v
+		../src/rtl/reset_delay.v
+		../src/rtl/vga_example.v
+		../src/rtl/vga_timing.v
+		../src/rtl/ff_synchronizer.v
+		../src/rtl/char_rom.v
+		../src/rtl/control_unit.v
+		../src/rtl/draw_rect_char.v
+		../src/rtl/draw_square1.v
+		../src/rtl/draw_square2.v
+		../src/rtl/draw_square3.v
+		../src/rtl/draw_square4.v
+		../src/rtl/draw_square5.v
+		../src/rtl/draw_square6.v
+		../src/rtl/draw_square7.v
+		../src/rtl/draw_square8.v
+		../src/rtl/draw_square9.v
+		../src/rtl/font_rom.v
+		../src/rtl/fifo.v
+		../src/rtl/mod_m_counter.v
+		../src/rtl/square_ctl.v
+		../src/rtl/UART.v
+		../src/rtl/uart_rx.v
+		../src/rtl/uart_tx.v
+		../src/rtl/uart_unit.v
+		../src/rtl/winner_check.v
     }
     
     # Specify vhdl design files location      -- EDIT
     read_vhdl {
-        rtl/MouseCtl.vhd    
-        rtl/MouseDisplay.vhd
-		rtl/Ps2Interface.vhd
+        ../src/rtl/MouseCtl.vhd    
+        ../src/rtl/MouseDisplay.vhd
+		../src/rtl/Ps2Interface.vhd
     }
     
     # Specify files for memory initialization -- EDIT
